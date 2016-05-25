@@ -1,0 +1,7 @@
+path: context/common_context.yaml
+
+en:
+  key: english
+
+zh_Hans:
+  key: 中文
