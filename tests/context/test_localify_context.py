@@ -44,7 +44,7 @@ class LocalifyContextTestCase(WithContext, unittest.TestCase):
             u'zh_Hans': {u'greeting': u'你好'}
         }
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         expected = {
             u'greeting': u'Hello',
             u'en': {u'greeting': u'Hello'},
@@ -52,7 +52,7 @@ class LocalifyContextTestCase(WithContext, unittest.TestCase):
         }
         self.assertEqual(g.locales._localify_context(**context), expected)
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         expected = {
             u'greeting': u'你好',
             u'en': {u'greeting': u'Hello'},

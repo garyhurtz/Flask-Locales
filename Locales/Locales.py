@@ -49,31 +49,6 @@ class Locales(object):
         # template filters
         current_app.jinja_env.filters[u'tag'] = self.tag
 
-    def get_current(self):
-        """
-        execute the current_locale global
-
-        :return: the current locale
-        """
-        return self.current
-
-    def tag(self, locale):
-        """
-        execute the tag filter
-
-        :param locale: the locale to convert
-        :return: the tag corresponding to locale
-        """
-        return self.tag_map.get(locale)
-
-    def get_next_tag(self):
-        """
-        Return the tag for the next locale
-
-        :return: the tag corresponding to the next locale
-        """
-        return self.tag_map.get(self.next())
-
     @property
     def default(self):
         """
@@ -105,10 +80,22 @@ class Locales(object):
                 locale = self.default
 
             # set the current locale
-            self.set(locale)
+            self.current = locale
 
         return self._current
 
+    @current.setter
+    def current(self, locale):
+        """
+        Set a specific locale.
+
+        :param locale: the desired locale
+        :return: None
+        """
+        session[u'locale'] = locale
+        self._current = locale
+
+    @property
     def next(self):
         """
         Return the next locale
@@ -138,17 +125,7 @@ class Locales(object):
 
         :return: None
         """
-        self.set(self.next())
-
-    def set(self, locale):
-        """
-        Set a specific locale.
-
-        :param locale: the desired locale
-        :return: None
-        """
-        session[u'locale'] = locale
-        self._current = locale
+        self.current = self.next
 
     def render_template(self, template_name_or_list, context=None, **ctx):
         """
@@ -265,3 +242,32 @@ class Locales(object):
         )
 
         return context
+
+    ###
+    # Template globals and filter interface
+    ###
+
+    def get_current(self):
+        """
+        execute the current_locale global
+
+        :return: the current locale
+        """
+        return self.current
+
+    def tag(self, locale):
+        """
+        execute the tag filter
+
+        :param locale: the locale to convert
+        :return: the tag corresponding to locale
+        """
+        return self.tag_map.get(locale)
+
+    def get_next_tag(self):
+        """
+        Return the tag for the next locale
+
+        :return: the tag corresponding to the next locale
+        """
+        return self.tag_map.get(self.next)

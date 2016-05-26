@@ -77,7 +77,7 @@ class BasicTestCase(WithContext, unittest.TestCase):
         """
         I should be able to set the locale
         """
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         self.assertEqual(g.locales.current, u'zh_Hans')
 
     def test_flask_render_template_still_works(self):
@@ -138,40 +138,40 @@ class BasicTestCase(WithContext, unittest.TestCase):
 
     def test_template_global_current_locale(self):
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         self.assertEqual(u'en', g.locales.render_template(u'current_locale.html'))
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         self.assertEqual(u'zh_Hans', g.locales.render_template(u'current_locale.html'))
 
     def test_template_global_get_tag(self):
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         self.assertEqual(u'EN', g.locales.render_template(u'get_tag.html'))
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         self.assertEqual(u'中文', g.locales.render_template(u'get_tag.html'))
 
     def test_template_global_get_tag(self):
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         self.assertEqual(u'中文', g.locales.render_template(u'get_next_tag.html'))
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         self.assertEqual(u'EN', g.locales.render_template(u'get_next_tag.html'))
 
     def test_localify_path(self):
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         self.assertEqual(u'en/template.html', g.locales._localify_path(u'template.html'))
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         self.assertEqual(u'zh_Hans/context.yaml', g.locales._localify_path(u'context.yaml'))
 
     def test_localify_path_with_blueprints(self):
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         self.assertEqual(u'blueprint/en/template.html', g.locales._localify_path(u'blueprint/template.html'))
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         self.assertEqual(u'blueprint/zh_Hans/context.yaml', g.locales._localify_path(u'blueprint/context.yaml'))

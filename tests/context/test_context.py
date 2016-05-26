@@ -51,7 +51,7 @@ class ContextTestCase(WithContext, unittest.TestCase):
             }
         }
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
 
         self.assertEqual(
             g.locales.render_template(u'other_locale.html', **context),
@@ -63,13 +63,13 @@ class ContextTestCase(WithContext, unittest.TestCase):
         Should be able to render a template by specifying only the template name and the context name, and the correct files will be selected
         :return:
         """
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         result = g.locales.render_template(u'template.html', u'context.yaml').split()
 
         self.assertEqual(result[0], u'en/template.html')
         self.assertEqual(result[1], u'en/context.yaml')
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         result = g.locales.render_template(u'template.html', u'context.yaml').split()
 
         self.assertEqual(result[0], u'zh_Hans/template.html')
@@ -83,14 +83,14 @@ class ContextTestCase(WithContext, unittest.TestCase):
 
         ctx = {u'other': u'extra'}
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         result = g.locales.render_template(u'template.html', u'context.yaml', **ctx).split()
 
         self.assertEqual(result[0], u'en/template.html')
         self.assertEqual(result[1], u'en/context.yaml')
         self.assertEqual(result[2], u'extra')
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         result = g.locales.render_template(u'template.html', u'context.yaml', **ctx).split()
 
         self.assertEqual(result[0], u'zh_Hans/template.html')
@@ -105,13 +105,13 @@ class ContextTestCase(WithContext, unittest.TestCase):
 
         ctx = {u'other': u'extra'}
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         result = g.locales.render_template(u'template.html', **ctx).split()
 
         self.assertEqual(result[0], u'en/template.html')
         self.assertEqual(result[1], u'extra')
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         result = g.locales.render_template(u'template.html', **ctx).split()
 
         self.assertEqual(result[0], u'zh_Hans/template.html')

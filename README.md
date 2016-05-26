@@ -37,23 +37,27 @@ After applying the extension, the API is available in view functions at *g.local
 
 # API
 
-## Methods
+## Properties
 
 ### *current*
 
-Get the name of the current locale. Note that this is a property, not a method.
+Get the name of the current locale.
 
 At the start of each request, Locales checks the *session* to see if a locale has been set. If not (such as on the first request of a new session) the extension attempts to find the best match based on browser settings. If a best match cannot be identified, the default locale (as specified in the application config) is used. This behavior ensures that *current* always stores a valid locale.
         
-### *set(locale)*
+### *next*
 
-Set the current locale.
+Return the name of the next locale, as defined in application config. This is useful in applications that use *toggle()* to iterate through available locales.
 
-*locale* is the name of the locale to use going forward, and is stored on the session so that it used on requests that follow.
+### *default*
+
+Return the name of the default locale
+
+## Methods
 
 ### *toggle()*
 
-Transition to the next locale, in the order defined in the application configuration. Convenient if you use a simple toggle button to cycle through locales.
+Transition to the next locale, in the order defined in the application configuration. Convenient if you use a simple toggle button to iterate through available locales.
 
 ### *render_template(template_name_or_list, static_context=None, \**context)*
 
@@ -155,6 +159,10 @@ We will take a look at a few examples below that should help clarify everything.
 
 Of course, there is also dynamic information that can change from request to request, which is referred to as the *context* in order to remain consistent with Flask naming conventions. The extension treats the *context* identically to Flask.
 
+### *load(path)*
+
+Load context information from path.
+
 ## Template Globals
 
 ### current_locale()
@@ -181,11 +189,11 @@ Context loaders are functions that:
 
 Locales ships with few context loaders, and custom context loaders can be added as needed to support other file formats. Current built-in context loaders include:
 
-* yaml_loader - the default loader, loads content from yaml files (assumes \*.yaml suffix). YAML provides a relatively user-friendly format for defining localized content, but parses relatively slowly so this loader may not be suitable for high-traffic sites. You can learn more about YAML [here](http://yaml.org/).
+* **yaml_loader** - the default loader, loads content from yaml files (assumes \*.yaml suffix). YAML provides a relatively user-friendly format for defining localized content, but parses relatively slowly so this loader may not be suitable for high-traffic sites. You can learn more about YAML [here](http://yaml.org/).
 
-* json_loader - an alternative loader, which has a less user-friendly file format, but parses significantly faster (~50x faster, in my tests). This loader is very useful if your workflow uses external code to generate the localized content files. You can generate them in any way you like, then export them as JSON into the appropriate directories. You can learn more about JSON [here](http://www.json.org/).
+* **json_loader** - an alternative loader, which has a less user-friendly file format, but parses significantly faster (~50x faster, in my tests). This loader is very useful if your workflow uses external code to generate the localized content files. You can generate them in any way you like, then export them as JSON into the appropriate directories. You can learn more about JSON [here](http://www.json.org/).
 
-* json_caching_yaml_loader - an alternate loader for people who like YAML, but want better performance. Benefits from YAML as a user interface, but caches the content in JSON format to benefit from it's improved parsing speed. This is the recommended loader, but is not used by default since it generates cache folders.
+* **json_caching_yaml_loader** - an alternate loader for people who like YAML, but want better performance. Benefits from YAML as a user interface, but caches the content in JSON format to benefit from it's improved parsing speed. This is the recommended loader, but is not used by default since it generates cache folders.
 
 Context loaders are pretty simple, for example here is the JSON loader:
 
@@ -205,9 +213,11 @@ Context loaders are applied as class methods, which explains why you need the *c
 
 Next, you pass the loader the path to the file to load. Path localization, etc is handled for you before the loader is called, so all you need to do is load the requested file and return the content.
 
-# Baseline Examples
-    
-## Flask *render_template*:
+# Examples
+
+## Baseline Examples
+
+### Flask *render_template*:
 
 This example is the default Flask render_template, and is included to set a baseline comparison purposes.
 
@@ -233,7 +243,7 @@ the result:
 
     Hello World!
 
-## Flask *render_template* With Blueprints:
+### Flask *render_template* With Blueprints:
 
 Like the preceding example, this example shows the default Flask render_template with Blueprints, and is included as a baseline for comparison purposes.
 
@@ -261,9 +271,9 @@ the result:
 
     Hello World!
 
-# Locales Examples
+## Locales Examples
 
-## Basic Setup
+### Basic Setup
 
 This is the basic setup, which is backwards-compatible with default Flask. Note that behavior is identical to that of the Flask example above.
 
@@ -289,7 +299,7 @@ the result:
 
     Hello World!
     
-## Basic Setup With Blueprints:
+### Basic Setup With Blueprints:
 
 As with the preceding example, this extension is also backwards-compatible when using Blueprints, too.
 
@@ -315,9 +325,9 @@ the result:
 
     Hello World!
 
-# Localized Template Examples:
+## Localized Template Examples:
 
-## Basic
+### Basic
 
 Here is the first example that actually uses some capability from the extension. Although you generally won't prepare completely separate documents for each locale, this example demonstrates how one would do so. This also provides a simplified example to give you a feel for how the extension works with the directory structure.
 
@@ -354,7 +364,7 @@ the result (g.locales.current == 'zh_Hans'):
 
 Note that no information about the current locale needs to be coded into the view function, and *render_template* is pointed to a path that doesn't even exist, yet the extension is able to select and render localized content.
 
-## Basic with Blueprints:
+### Basic with Blueprints:
 
 It works pretty much the same with Blueprints too.
 
@@ -525,11 +535,11 @@ The result (assuming g.locales.current == 'en'):
         </div>
     </div>
 
-# Static Context Examples:
+## Static Context Examples:
 
 We have looked at a few examples of how templates are located within the directory structure, so lets now look at some example for how static contexts are handled.
 
-## Basic
+### Basic
 
 Our first example uses a single master template that is populated with localized content from the *static context*, and uses the following folder structure:
 
@@ -604,7 +614,7 @@ the result (g.locales.current == 'zh_Hans'):
 
 So, as with previous examples, the extension was able to locate the correct localized content and render it with the template.
 
-## Basic with Blueprints
+### Basic with Blueprints
 
 This is how it would look with Blueprints:
 
@@ -678,6 +688,8 @@ the result (g.locales.current == 'zh_Hans'):
     </div>
 
 ## Common Context
+
+### Basic
 
 So, you basically work with the static context just as you would with templates. But, with one exception, the common context.
 
@@ -756,7 +768,7 @@ then gets passed to the template. The template contains *greeting* and *paragrap
 
 Note that no information was lost in the process, although common variables will get overwritten by localized variables with the same keys, if they exist. Templates are still able to directly reference variables from any locale, i.e. {{ zh_Hans.greeting }}.
     
-## Common Context with Blueprints
+### Basic with Blueprints
 
 Here is how the previous example would look if the project were to use Blueprints:
 

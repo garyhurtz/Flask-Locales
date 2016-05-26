@@ -38,7 +38,7 @@ class ContextLoadTests(object):
         If the specified file is located within the current locale's context folder, load it
         :return:
         """
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         context = g.locales.load(u'localed_context.yaml')
 
         self.assertEqual(
@@ -46,7 +46,7 @@ class ContextLoadTests(object):
             u'en/localed_context.yaml'
         )
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         context = g.locales.load(u'localed_context.yaml')
 
         self.assertEqual(
@@ -59,7 +59,7 @@ class ContextLoadTests(object):
         If the specified file is located within the current locale's context folder, load it
         :return:
         """
-        g.locales.set(u'en')
+        g.locales.current = u'en'
         context = g.locales.load(u'blueprint/localed_context.yaml')
 
         self.assertEqual(
@@ -67,7 +67,7 @@ class ContextLoadTests(object):
             u'blueprint/en/localed_context.yaml'
         )
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
         context = g.locales.load(u'blueprint/localed_context.yaml')
 
         self.assertEqual(

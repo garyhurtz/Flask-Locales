@@ -64,14 +64,14 @@ class TemplatesTestCase(WithContext, unittest.TestCase):
 
     def test_locales_will_use_the_localed_template_if_available(self):
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
 
         self.assertEqual(
             g.locales.render_template(u'template.html'),
             u'en/template.html'
         )
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
 
         self.assertEqual(
             g.locales.render_template(u'template.html'),
@@ -80,14 +80,14 @@ class TemplatesTestCase(WithContext, unittest.TestCase):
 
     def test_locales_will_use_the_localed_template_if_available_with_blueprints_too(self):
 
-        g.locales.set(u'en')
+        g.locales.current = u'en'
 
         self.assertEqual(
             g.locales.render_template(u'blueprint/template.html'),
             u'blueprint/en/template.html'
         )
 
-        g.locales.set(u'zh_Hans')
+        g.locales.current = u'zh_Hans'
 
         self.assertEqual(
             g.locales.render_template(u'blueprint/template.html'),
