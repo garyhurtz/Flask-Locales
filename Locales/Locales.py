@@ -21,7 +21,6 @@ class Locales(object):
         self.tag_map = {}
 
         self._current = None
-        self._next = None
 
         if app is not None:
             self.init_app(app)
@@ -217,6 +216,7 @@ class Locales(object):
         attempts = (self._localify_path(path), path)
 
         for attempt in attempts:
+
             try:
                 _path = os.path.join(
                     current_app.root_path,
